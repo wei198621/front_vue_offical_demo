@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+		<script type="text/javascript" charset="UTF-8" src="vue.js">
+			
+		</script>
+	</head>
+	<body>
+		<div id="app">
+			{{ a }}
+			<br>
+			<!-- 全局组件 -->
+			<my-button title2="mytitle" v-on:inner_click="out_click" >mybtn2</my-button>
+			<!-- 局部组件 -->
+			<local_component2 v-on:inner_click2="out_click_4_innerComp" ></local_component2>
+			
+		</div>
+		<script type="text/javascript">
+			// 全局组件
+			Vue.component("my-button",{
+				template:'<div><button name="lili" v-on:click="myclick" >MyButton</button></div>',
+				data:function(){
+					return {
+						count:0,
+					}
+				},
+				props: ["title2"],
+				methods:{
+					// 在myclik事件中触发 inner_click 事件,
+					// inner_click 事件是个中介 ,用于触发 用户自定义的out_click 事件 
+					myclick: function(){
+						alert("I am myclick ");
+						this.count++;						
+						this.$emit('inner_click',this.count)
+					}
+				}
+			});
+			
+			var vmdata={ 
+				a:1,
+			};
+			var vm =new Vue({
+				el: "#app",
+				data: vmdata,
+				methods:{
+					out_click: function( str ){
+						alert("I am out click "+ str );
+					},
+					out_click_4_innerComp:function(){
+						alert(" I am inner Comp ");
+					},
+				},
+				components:{
+					// 局部组件 
+					local_component2:{
+						template:"<div><h2>LocalComponent_123456</h2><button v-on:click='myclick2' name='innerCompBtn'>ClickBtn</button></div>",
+						data: function(){								
+							return {
+							}
+						},
+						props:[],
+						methods:{
+							myclick2:function(){
+								console.log("myclick2");
+								this.$emit('inner_click2');
+							}
+						}
+					}
+				}
+			});
+			
+		
+			
+		</script>
+		<style type="text/css">
+			
+		</style>
+	</body>
+</html>
